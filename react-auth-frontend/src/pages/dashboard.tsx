@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { getProfile } from "../api/auth";
+import { Container } from "@mui/material";
+import DashboardCard from "../components/UserCard";
 
 const Dashboard: React.FC = () => {
     const [user, setUser] = useState<any>(null);
@@ -26,7 +28,6 @@ const Dashboard: React.FC = () => {
             }
 
             const timeLeft = (decoded.exp - currentTime) * 1000;
-
             const timeout = setTimeout(() => {
                 localStorage.removeItem("token");
                 navigate("/login");
@@ -43,7 +44,6 @@ const Dashboard: React.FC = () => {
 
             fetchProfile();
 
-            // Cleanup timeout on unmount
             return () => clearTimeout(timeout);
         } catch (error) {
             console.error("Invalid token", error);
@@ -53,18 +53,16 @@ const Dashboard: React.FC = () => {
     }, [navigate]);
 
     return (
-        <div>
-            <h1>Dashboard</h1>
-            {user ? (
-                <div>
-                    <p>UserID: {user.id}</p>
-                    <p>Email: {user.email}</p>
-                    <p>CreatedAt: {user.createdAt.split("T")[0]}</p>
-                </div>
-            ) : (
-                <p>Loading...</p>
-            )}
-        </div>
+        <Container 
+            sx={{ 
+                display: "flex", 
+                justifyContent: "center", 
+                alignItems: "center", 
+                height: "100vh",
+            }}
+        >
+            <DashboardCard user={user} />
+        </Container>
     );
 };
 
